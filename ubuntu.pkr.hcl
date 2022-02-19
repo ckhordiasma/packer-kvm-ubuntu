@@ -9,7 +9,7 @@ source "qemu" "example" {
   vnc_bind_address = "0.0.0.0"
   format           = "qcow2"
   accelerator      = "kvm"
-  http_directory   = "./www"
+  #http_directory   = "./www"
   ssh_username     = "ubuntu"
   ssh_password     = "ubuntu"
   ssh_timeout      = "30m"
@@ -24,6 +24,28 @@ source "qemu" "example" {
                       "/casper/vmlinuz initrd=/casper/initrd ",
                       "autoinstall quiet ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
                       "<enter><enter><enter>"]
+  http_content = {
+    "/meta-data" = ""
+    "/user-data" = <<EOF
+#cloud-config
+autoinstall:
+  version: 1
+  identity:
+    hostname: ubuntu-server
+    password: "$6$exDY1mhS4KUYCE/2$zmn9ToZwTKLhCw.b4/b.ZRTIZM30JZ4QrOQ2aOXJ8yk96xpcCof0kxKwuX1kqLG/ygbJ1f8wxED22bTL4F46P0"
+    username: ubuntu
+  early-commands:
+    - systemctl stop ssh
+  ssh:
+    allow-pw: true
+    authorized-keys: []
+    install-server: true
+  late-commands:
+    - "echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/ubuntu"
+    - "chmod 440 /target/etc/sudoers.d/ubuntu"
+EOF
+
+  }
 }
 
 build {
