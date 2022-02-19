@@ -18,12 +18,10 @@ source "qemu" "example" {
   net_device       = "virtio-net"
   disk_interface   = "virtio"
   boot_wait        = "3s"
-  boot_command     = ["<esc><wait><esc><f6><esc><wait>",
-                      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-                      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+  boot_command     = ["<esc><wait><esc><wait><esc><wait><enter>",
                       "/casper/vmlinuz initrd=/casper/initrd ",
                       "autoinstall quiet ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
-                      "<enter><enter><enter>"]
+                      "<wait><enter>"]
   http_content = {
     "/meta-data" = ""
     "/user-data" = <<EOF
